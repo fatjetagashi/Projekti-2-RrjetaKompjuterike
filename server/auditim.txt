@@ -1,0 +1,154 @@
+gent; admin; print
+gent; admin; print
+euron; pass; read asd.txt
+euron; pass; read asd.txt
+euron; pass; write asd.txt
+eurom; pass; write asd.txt babijeem
+gent; admin; write auditim.txt euroni na ishte ketu
+gent; admin; write asd.txt zhushi zhushi zhushii
+gent; admin; write auditim.txt zhushi zhushi zhushii
+gent; admin; write alehandro.txt zhushi zhushi zhushii
+gent; admin; write euroni.txt zhushi zhushi zhushii
+gent; admin; write auditim.txt zhushi zhushi zhushii
+gent; admin; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gent; admin; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gent; admin; print
+gent; admin; print
+gent; admin; print
+gent; admin; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gennt; user; print
+gent; admin; print
+gent; admin; print
+gent; admin; print
+gent; admin; print
+gennt; user; print
+gent; admin; print
+gennt; user; print
+gent; zhushi; print
+gentzhushi; admin; print
+gentzhushi; admin; print
+gentzhushi; admin; print
+gent; zhushi; print
+gent; zhushi; help
+gent; zhushi; asdasd
+as; sd; asd
+asd; asd; asd
+asd; asd; asd
+asd; asd; asd
+asd; asd; asd
+asd; asd; asd
+asd; asd; asd
+gent; admin; print
+asd; asd; asd
+gent; admin; print
+gent; admin; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asdasd; print
+asd; asdasd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+admin; admin; print
+admin; admin; print
+admin; admin; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+gent; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+gent; asd; print
+gent; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; print
+asd; asd; ogout
+asd; asd; logout
+euron osmani; admin; write euroni.txt pershendetje, kutia e euronit
+gent zhushi; zhushii; read euroni.txt
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+euron osmani; admin; write euroni.txt pershendetje, kutia e euronit
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent zhushi; zhushii; read euroni.txt
+gent podvorica; genti; print
+gent zhushi; zhushii; print
+gent zhushi; zhushii; print
+gent zhushi; zhushii; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+gent podvorica; genti; print
+adnit gashi; admin; print
