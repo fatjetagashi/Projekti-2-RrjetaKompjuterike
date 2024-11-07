@@ -39,7 +39,37 @@ server.on('listening', () => {
  */
 
 //~~
+server.on('message', (msg, remoteInfo) => {
+    const clientKey = remoteInfo.address + ':' + remoteInfo.port
+    let mesazhi = msg.toString().split('; ') // 0-username, 1-password, 2-ctrl
 
+    // [gentpodvorica, admin, commana askdlsadkjfsa;lk]
+    fileSystem.writeFile(`${__dirname}/auditim.txt`, `\n${msg}`, {flag: 'a'}, (error) => { // audito kerkesen!
+        if(error){
+            server.send('Serveri nuk mund te auditoj'.red, remoteInfo.port, remoteInfo.address)
+            console.error('Serveri nuk mund te auditoj')
+            return
+        }
+    })
+
+    if(!clients[clientKey]) {       // nese nuk osht n guest list
+        if(Object.keys(clients).length < maxClients){       // nese ka ven
+            clients[clientKey] = {
+                'username': mesazhi[0],
+                'password': mesazhi[1],
+                'ttl': 100,
+                'isAdmin': false
+            }
+            if(mesazhi[1] === adminPassword){        // nese e din passin
+                clients[clientKey].isAdmin = true
+            }
+            console.log(`Kane mbete edhe ${maxClients - Object.keys(clients).length} vende`.green)
+        } else { // nese ska ven
+            server.send("Me vjen keq, nuk ka vend.".yellow, remoteInfo.port, remoteInfo.address)
+            return
+        }
+    }
+}
 //~~
 
 function colorizeJSON(json) {
