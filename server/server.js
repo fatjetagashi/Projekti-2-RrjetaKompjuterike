@@ -69,6 +69,15 @@ server.on('message', (msg, remoteInfo) => {
             return
         }
     }
+
+    Object.keys(clients).forEach(key => { // decrement ttl and delete client if neccesary
+        clients[clientKey].ttl = ttlInit // reset ttl
+        if(key != clientKey) // nese ski qu mesazh
+            if(clients[key].ttl > 0) clients[key].ttl-- // edhe ki ttl , ule ttl
+            else delete clients[key] // perndryshe myte
+    })
+
+    console.log(`[${clients[clientKey].key}] => ${msg}`) // print cili klient qka po thot
 }
 //~~
 
