@@ -152,3 +152,7 @@ gent podvorica; genti; print
 gent podvorica; genti; print
 gent podvorica; genti; print
 adnit gashi; admin; print
+admin; admin; write asd.txt hello
+admin; admin; read asd.txt
+hej; hej; write asd.txt
+hej; hej; read asd.txt

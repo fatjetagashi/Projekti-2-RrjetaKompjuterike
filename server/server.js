@@ -130,35 +130,38 @@ server.on('message', (msg, remoteInfo) => {
         server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
     }
 
-    // kick <username>
-    else if (command[0] === 'kick'){
+    
+
+    else if (command[0] === 'kick') {
         if (clients[clientKey].isAdmin === true) {
-            let usernameToKick = command.slice(1).join(" ")
+            let usernameToKick = command.slice(1).join(" ");
             let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
-//~~
+            if (keyToKick) {
+                delete clients[keyToKick];
+                server.send(`Klienti '${usernameToKick}' u largua me sukses.`.green, remoteInfo.port, remoteInfo.address);
+                console.log(`Klienti '${usernameToKick}' u largua nga serveri.`);
+            } else {
+                server.send("Klienti i specifikuar nuk ekziston.".yellow, remoteInfo.port, remoteInfo.address);
+            }
+        } else {
+            server.send("Nuk keni autorizim për të larguar klientët.".red, remoteInfo.port, remoteInfo.address);
+        }
+    }
+});
 
 function colorizeJSON(json) {
     if (typeof json != 'string') {
-         json = JSON.stringify(json, undefined, 4);
+        json = JSON.stringify(json, undefined, 4);
     }
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        var cls = 'number';
         if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-                cls = 'key';
-                return match.red
-            } else {
-                cls = 'string';
-                return match.green
-            }
+            return /:$/.test(match) ? match.red : match.green;
         } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-            return match.blue
+            return match.blue;
         } else if (/null/.test(match)) {
-            cls = 'null';
-            return match.blue
+            return match.blue;
         }
-        return match.yellow
+        return match.yellow;
     });
 }
