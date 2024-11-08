@@ -131,11 +131,24 @@ server.on('message', (msg, remoteInfo) => {
 
     
 
+    
+
     else if (command[0] === 'kick') {
         if (clients[clientKey].isAdmin === true) {
             let usernameToKick = command.slice(1).join(" ");
             let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
-//~~
+            if (keyToKick) {
+                delete clients[keyToKick];
+                server.send(`Klienti '${usernameToKick}' u largua me sukses.`.green, remoteInfo.port, remoteInfo.address);
+                console.log(`Klienti '${usernameToKick}' u largua nga serveri.`);
+            } else {
+                server.send("Klienti i specifikuar nuk ekziston.".yellow, remoteInfo.port, remoteInfo.address);
+            }
+        } else {
+            server.send("Nuk keni autorizim për të larguar klientët.".red, remoteInfo.port, remoteInfo.address);
+        }
+    }
+});
 
 function colorizeJSON(json) {
     if (typeof json != 'string') {
