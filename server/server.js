@@ -38,7 +38,6 @@ server.on('listening', () => {
  *      me mbyll lidhjen mas ni vacant time
  */
 
-//~~
 server.on('message', (msg, remoteInfo) => {
     const clientKey = remoteInfo.address + ':' + remoteInfo.port
     let mesazhi = msg.toString().split('; ') // 0-username, 1-password, 2-ctrl
@@ -135,7 +134,30 @@ server.on('message', (msg, remoteInfo) => {
         if (clients[clientKey].isAdmin === true) {
             let usernameToKick = command.slice(1).join(" ")
             let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
-//~~
+            if(keyToKick){
+                delete clients[keyToKick]
+                console.log(`Kane mbete edhe ${maxClients - Object.keys(clients).length} vende`.green)
+                server.send(`Klienti ${usernameToKick} eshte bere kick`.green, remoteInfo.port, remoteInfo.address)
+            } else {
+                server.send(`Klienti nuk eksiston`.yellow, remoteInfo.port, remoteInfo.address)
+            }
+        } else {
+            server.send("Nuk ki tdrejt dost".red, remoteInfo.port, remoteInfo.address)
+        }
+    }
+    // logout
+    else if (command[0] === 'logout'){
+        delete clients[clientKey]
+        console.log(`Kane mbete edhe ${maxClients - Object.keys(clients).length} vende`.green)
+        server.send(`Arrivederci`.magenta, remoteInfo.port, remoteInfo.address)
+        return
+    }
+    else {
+        server.send("Jo brud, komand e keqe...".red, remoteInfo.port, remoteInfo.address)
+    }
+
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+})
 
 function colorizeJSON(json) {
     if (typeof json != 'string') {
