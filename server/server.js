@@ -78,7 +78,59 @@ server.on('message', (msg, remoteInfo) => {
     })
 
     console.log(`[${clients[clientKey].key}] => ${msg}`) // print cili klient qka po thot
+
+// kqyr qka po don & kqyr a bon
+command = mesazhi[2].toString().split(' ') // write/read/execute 
+//write <file> <message>
+if(command[0] === 'write'){
+    if(clients[clientKey].isAdmin === true){
+        if(command[1] === 'auditim.txt'){
+            server.send("Fajlli eshte READ-ONLY".red, remoteInfo.port, remoteInfo.address)
+            return;
+        }
+        let file = `${__dirname}/${command[1]}`
+        let message = command.slice(2).join(" ")
+        fileSystem.writeFile(file, `\n${message}`, {flag: 'a'}, (error) => {
+            if (error) {
+                server.send("Error gjate shkrimit ne fajll".red, remoteInfo.port, remoteInfo.address)
+                return
+            }
+            server.send("Fajlli u shkrua me sukses".green, remoteInfo.port, remoteInfo.address)
+        })
+    } else {
+        server.send("Nuk ki tdrejt dost".yellow, remoteInfo.port, remoteInfo.address)
+    }
 }
+//read <file>  <message>
+else if (command[0] === 'read'){
+    // let file = command[1]
+    let file = `${__dirname}/auditim.txt/${command[1]}`
+    fileSystem.readFile(file, (error, fileData) => {
+        if (error) {
+            console.error("Error gjate leximit te fajllit")
+            // console.error(`${error.cause} -> ${error.message}`)
+            return
+        }
+        server.send(`Permbajtja e fajllit '${command[1].magenta}':\n${fileData.toString().green}`, remoteInfo.port, remoteInfo.address)
+    })
+}
+//execute <command>
+else if (command[0] === 'execute'){
+    // komanda ekzekutohet
+
+    let message = 'komanda ne fjale u ekzekutua'
+    server.send(message, remoteInfo.port, remoteInfo.address)
+}
+// print
+else if (command[0] === 'print'){
+    // server.send(JSON.stringify(clients, null, 2), remoteInfo.port, remoteInfo.address)
+    server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
+}
+// kick <username>
+else if (command[0] === 'kick'){
+    if (clients[clientKey].isAdmin === true) {
+        let usernameToKick = command.slice(1).join(" ")
+        let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
 //~~
 
 function colorizeJSON(json) {
