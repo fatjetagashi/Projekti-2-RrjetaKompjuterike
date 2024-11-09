@@ -53,17 +53,19 @@ server.on('message', (msg, remoteInfo) => {
         }
     });
     
-    if(!clients[clientKey]) {       // nese nuk osht n guest list
+    if(!clients[clientKey]) {   // nese nuk osht n guest list
+        if (mesazhi.length < 3) {
+            server.send("Ju lutemi siguroni emrin, passwordin dhe komanden.".yellow, remoteInfo.port, remoteInfo.address)
+            return
+        }
         if(Object.keys(clients).length < maxClients){       // nese ka ven
             clients[clientKey] = {
                 'username': mesazhi[0],
                 'password': mesazhi[1],
                 'ttl': 100,
-                'isAdmin': false
+                'isAdmin': mesazhi[1] == adminPassword
             }
-            if(mesazhi[1] === adminPassword){        // nese e din passin
-                clients[clientKey].isAdmin = true
-            }
+        
             console.log(`Kane mbete edhe ${maxClients - Object.keys(clients).length} vende`.green)
         } else { // nese ska ven
             server.send("Me vjen keq, nuk ka vend.".yellow, remoteInfo.port, remoteInfo.address)
@@ -81,7 +83,8 @@ server.on('message', (msg, remoteInfo) => {
     console.log(`[${clients[clientKey].username}] => ${msg}`) // print cili klient qka po thot
 
     // kqyr qka po don & kqyr a bon
-    command = mesazhi[2].toString().split(' ') // write/read/execute 
+    const command = clients[clientKey] ? mesazhi[mesazhi.length - 1].toString().split(' ') : mesazhi[2].toString().split(' ')
+
     //write <file> <message>
     if(command[0] === 'write'){
         if(clients[clientKey].isAdmin === true){
