@@ -122,10 +122,25 @@ server.on('message', (msg, remoteInfo) => {
 
     //execute <command>
     else if (command[0] === 'execute'){
-        // komanda ekzekutohet
+    
+            if (clients[clientKey].isAdmin) { 
+                const exec = require('child_process').exec;
+                const execCommand = command.slice(1).join(" "); 
+                exec(execCommand, (error, stdout, stderr) => {
+                    if (error) {
+                        server.send(`Error gjate ekzekutimit te komandes: ${error.message}`.red, remoteInfo.port, remoteInfo.address);
+                        return;
+                    }
+                    let message = 'komanda ne fjale u ekzekutua'
+                      server.send(message, remoteInfo.port, remoteInfo.address)
+                });
+            } else {
+                server.send("Nuk keni autorizim per te ekzekutuar komanda.".red, remoteInfo.port, remoteInfo.address);
+            }
+        
+        
 
-        let message = 'komanda ne fjale u ekzekutua'
-        server.send(message, remoteInfo.port, remoteInfo.address)
+        
     }
 
     // print
