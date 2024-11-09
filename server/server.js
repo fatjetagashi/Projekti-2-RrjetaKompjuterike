@@ -78,7 +78,7 @@ server.on('message', (msg, remoteInfo) => {
             else delete clients[key] // perndryshe myte
     })
 
-    console.log(`[${clients[clientKey].key}] => ${msg}`) // print cili klient qka po thot
+    console.log(`[${clients[clientKey].username}] => ${msg}`) // print cili klient qka po thot
 
     // kqyr qka po don & kqyr a bon
     command = mesazhi[2].toString().split(' ') // write/read/execute 
