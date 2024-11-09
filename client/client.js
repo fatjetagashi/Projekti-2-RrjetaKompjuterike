@@ -1,6 +1,3 @@
-//write-file-message
-//read-file-message
-//execute-command
 
 const dgram = require('dgram')
 const rl = require('readline')
