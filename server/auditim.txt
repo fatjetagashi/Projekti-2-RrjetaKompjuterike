@@ -155,4 +155,19 @@ adnit gashi; admin; print
 admin; admin; write asd.txt hello
 admin; admin; read asd.txt
 hej; hej; write asd.txt
-hej; hej; read asd.txt
+hej; hej; read asd.txt[2024-11-09T01:42:22.883Z] [127.0.0.1:59310] - hello; hello; write asd.txt
+[2024-11-09T01:43:40.257Z] [127.0.0.1:62192] - hi; hi; write asd.txt
+[2024-11-09T01:44:37.549Z] [127.0.0.1:62192] - hi; hi; write asd.txt hej
+[2024-11-09T01:45:53.333Z] [127.0.0.1:62192] - admin; admin; write asd.txt hej
+[2024-11-09T01:48:34.083Z] [127.0.0.1:62192] - admin; admin; write asd.text hej
+
+admin; admin; write asd.txt alo
+alo; alo; write asd.txt hej
+fatjeta; fatjeta; write asd.txt hi
+gashi; gashi; write asd.txt hej
+gashi; gashi; read asd.txt[2024-11-09T02:22:48.342Z] [127.0.0.1:60749] - admin; admin; write asd.txt hej
+[2024-11-09T02:23:45.001Z] [127.0.0.1:60749] - admin; admin; read asd.text
+[2024-11-09T02:27:36.029Z] [127.0.0.1:60749] - admin; admin; read asd.txt
+[2024-11-09T02:28:52.779Z] [127.0.0.1:55542] - admin; admin; write asd.txt hej
+[2024-11-09T02:29:27.390Z] [127.0.0.1:55542] - admin; admin; read asd.txt
+[2024-11-09T02:30:01.769Z] [127.0.0.1:55542] - admin; admin; read auditim.txt

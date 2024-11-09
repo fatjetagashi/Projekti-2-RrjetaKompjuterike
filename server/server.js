@@ -42,15 +42,17 @@ server.on('message', (msg, remoteInfo) => {
     const clientKey = remoteInfo.address + ':' + remoteInfo.port
     let mesazhi = msg.toString().split('; ') // 0-username, 1-password, 2-ctrl
 
-    // [gentpodvorica, admin, commana askdlsadkjfsa;lk]
-    fileSystem.writeFile(`${__dirname}/auditim.txt`, `\n${msg}`, {flag: 'a'}, (error) => { // audito kerkesen!
-        if(error){
-            server.send('Serveri nuk mund te auditoj'.red, remoteInfo.port, remoteInfo.address)
-            console.error('Serveri nuk mund te auditoj')
-            return
+    const timestamp = new Date().toISOString(); // Merr kohën aktuale në format ISO
+    const auditMessage = `[${timestamp}] [${remoteInfo.address}:${remoteInfo.port}] - ${msg}\n`;
+    
+    fileSystem.writeFile(`${__dirname}/auditim.txt`, auditMessage, {flag: 'a'}, (error) => { 
+        if (error) {
+            server.send('Serveri nuk mund te auditoj'.red, remoteInfo.port, remoteInfo.address);
+            console.error('Serveri nuk mund te auditoj');
+            return;
         }
-    })
-
+    });
+    
     if(!clients[clientKey]) {       // nese nuk osht n guest list
         if(Object.keys(clients).length < maxClients){       // nese ka ven
             clients[clientKey] = {
@@ -103,17 +105,17 @@ server.on('message', (msg, remoteInfo) => {
 
     //read <file>  <message>
     else if (command[0] === 'read'){
-        // let file = command[1]
-        let file = `${__dirname}/auditim.txt/${command[1]}`
+        let file = `${__dirname}/${command[1]}`;
         fileSystem.readFile(file, (error, fileData) => {
             if (error) {
-            console.error("Error gjate leximit te fajllit")
-            // console.error(`${error.cause} -> ${error.message}`)
-            return
-            }   
-            server.send(`Permbajtja e fajllit '${command[1].magenta}':\n${fileData.toString().green}`, remoteInfo.port, remoteInfo.address)
-        })
+                console.error("Error gjate leximit te fajllit");
+                server.send("Error gjate leximit te fajllit".red, remoteInfo.port, remoteInfo.address);
+                return;
+            }
+            server.send(`Permbajtja e fajllit '${command[1].magenta}':\n${fileData.toString().green}`, remoteInfo.port, remoteInfo.address);
+        });
     }
+    
 
     //execute <command>
     else if (command[0] === 'execute'){
