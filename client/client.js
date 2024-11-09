@@ -1,6 +1,3 @@
-//write-file-message
-//read-file-message
-//execute-command
 
 const dgram = require('dgram')
 const rl = require('readline')
@@ -16,16 +13,20 @@ const readLine = rl.createInterface({
     output: process.stdout
 });
 
-readLine.question('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
-                'Shenoni kerkesen tuaj:\n\n' +
-                '    username; password; write <file> <message>\n' +
-                                '\t\t\tread <file>\n' +
-                                '\t\t\texecute <command>\n' +
-                                '\t\t\tkick <username>\n' +
-                                '\t\t\tprint\n' +
-                                '\t\t\tlogout\n' +
-                                '\t\t\t\'exit\' exit\n' +
-                '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n', 
+readLine.question(
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
+    '                Zgjidhni nje nga opsionet e meposhtme\n\n' +
+    '    Formati: username; password; komanda \n\n' +
+    '   Komandat:\n' +
+    '       - write <file> <message>   : Shkruani nje mesazh ne nje file\n' +
+    '       - read <file>              : Lexoni permbajtjen e nje file-it\n' +
+    '       - execute <command>        : Ekzekutoni nje komande te percaktuar\n' +
+    '       - kick <username>          : Largoni nje klient\n' +
+    '       - print                    : Shfaqni informacion per te gjithe klientet\n' +
+    '       - logout                   : Logout nga serveri\n' +
+    '       - exit                     : Dilni nga programi\n' +
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
+    'Shkruani kerkesen tuaj:\n',
     (answer) => {
         if (answer.trim().toLowerCase() === 'exit') {
             readLine.close()
@@ -43,3 +44,5 @@ client.on('message', (msg, rinfo) => {
 readLine.on('line', (input) => {
     client.send(input, port, ip)
 })
+
+
