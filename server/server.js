@@ -11,6 +11,8 @@ const adminPassword = 'admin'
 const ttlInit = 10 // initial ttl
 const vacantTime = 30000; // Koha pa aktivitet (30 sekonda)
 
+const delayForRegularClients = 2000; // Koha e vonesës për klientët e zakonshëm në milisekonda 
+
 
 let clients = {} // objekt
 
@@ -37,10 +39,9 @@ server.on('listening', () => {
     
 })
 
-
 server.on('message', (msg, remoteInfo) => {
-    const clientKey = remoteInfo.address + ':' + remoteInfo.port
-    let mesazhi = msg.toString().split('; ') // 0-username, 1-password, 2-ctrl
+    const clientKey = remoteInfo.address + ':' + remoteInfo.port;
+    let mesazhi = msg.toString().split('; '); // 0-username, 1-password, 2-ctrl
 
     const timestamp = new Date().toISOString(); // Merr kohën aktuale në format ISO
     const auditMessage = `[${timestamp}] [${remoteInfo.address}:${remoteInfo.port}] - ${msg}\n`;
@@ -99,20 +100,23 @@ server.on('message', (msg, remoteInfo) => {
     if(command[0] === 'write'){
         if(clients[clientKey].isAdmin === true){
             if(command[1] === 'auditim.txt'){
-            server.send("Fajlli eshte READ-ONLY".red, remoteInfo.port, remoteInfo.address)
-            return;
+                server.send("Fajlli eshte READ-ONLY".red, remoteInfo.port, remoteInfo.address);
+                return;
             }
-        let file = `${__dirname}/${command[1]}`
-        let message = command.slice(2).join(" ")
-        fileSystem.writeFile(file, `\n${message}`, {flag: 'a'}, (error) => {
-            if (error) {
-                server.send("Error gjate shkrimit ne fajll".red, remoteInfo.port, remoteInfo.address)
-                return
-            }
-            server.send("Fajlli u shkrua me sukses".green, remoteInfo.port, remoteInfo.address)
-        })
+            let file = `${__dirname}/${command[1]}`
+            let message = command.slice(2).join(" ")
+            fileSystem.writeFile(file, `\n${message}`, {flag: 'a'}, (error) => {
+                if (error) {
+                    server.send("Error gjate shkrimit ne fajll".red, remoteInfo.port, remoteInfo.address);
+                    return;
+                }
+                server.send("Fajlli u shkrua me sukses".green, remoteInfo.port, remoteInfo.address);
+            })
         } else {
-            server.send("Nuk ki tdrejt dost".yellow, remoteInfo.port, remoteInfo.address)
+            // Vonon përgjigjen për klientët pa privilegje
+            setTimeout(() => {
+                server.send("Nuk ki tdrejt dost".yellow, remoteInfo.port, remoteInfo.address);
+            }, delayForRegularClients);
         }
     }
 
@@ -125,14 +129,20 @@ server.on('message', (msg, remoteInfo) => {
                 server.send("Error gjate leximit te fajllit".red, remoteInfo.port, remoteInfo.address);
                 return;
             }
-            server.send(`Permbajtja e fajllit '${command[1].magenta}':\n${fileData.toString().green}`, remoteInfo.port, remoteInfo.address);
+            // Kontrollon nëse klienti është admin për të vendosur vonesën
+            if (clients[clientKey].isAdmin === true) {
+                server.send(`Permbajtja e fajllit '${command[1].magenta}':\n${fileData.toString().green}`, remoteInfo.port, remoteInfo.address);
+            } else {
+                setTimeout(() => {
+                    server.send(`Permbajtja e fajllit '${command[1].magenta}':\n${fileData.toString().green}`, remoteInfo.port, remoteInfo.address);
+                }, delayForRegularClients);
+            }
         });
     }
-    
 
     //execute <command>
     else if (command[0] === 'execute'){
-    
+        setTimeout(() => {
             if (clients[clientKey].isAdmin) { 
                 const exec = require('child_process').exec;
                 const execCommand = command.slice(1).join(" "); 
@@ -142,26 +152,24 @@ server.on('message', (msg, remoteInfo) => {
                         return;
                     }
                     let message = 'komanda ne fjale u ekzekutua'
-                      server.send(message, remoteInfo.port, remoteInfo.address)
+                    server.send(message, remoteInfo.port, remoteInfo.address)
                 });
             } else {
                 server.send("Nuk keni autorizim per te ekzekutuar komanda.".red, remoteInfo.port, remoteInfo.address);
             }
-        
-        
-
-        
+        }, clients[clientKey].isAdmin ? 0 : delayForRegularClients);
     }
 
-    // print
-    else if (command[0] === 'print'){
-        // server.send(JSON.stringify(clients, null, 2), remoteInfo.port, remoteInfo.address)
-        server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
+     // print
+     else if (command[0] === 'print'){
+        setTimeout(() => {
+            server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
+        }, clients[clientKey].isAdmin ? 0 : delayForRegularClients);
     }
 
-    
-
-    else if (command[0] === 'kick') {
+   // kick
+   else if (command[0] === 'kick') {
+    setTimeout(() => {
         if (clients[clientKey].isAdmin === true) {
             let usernameToKick = command.slice(1).join(" ");
             let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
@@ -175,7 +183,8 @@ server.on('message', (msg, remoteInfo) => {
         } else {
             server.send("Nuk keni autorizim për të larguar klientët.".red, remoteInfo.port, remoteInfo.address);
         }
-    }
+    }, clients[clientKey].isAdmin ? 0 : delayForRegularClients);
+}
 });
 
 
