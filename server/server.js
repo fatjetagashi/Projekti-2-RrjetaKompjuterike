@@ -24,7 +24,7 @@ server.on('listening', () => {
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     console.log(`Serveri po degjon ne socketin: ` + `[${ip}:${port}]`.magenta)
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    monitorClientActivity(); // nisja e monitorimit te aktivitetit
+
     const readLine = rl.createInterface({
         input: process.stdin,
         output: process.stdout
@@ -70,7 +70,7 @@ server.on('message', (msg, remoteInfo) => {
                 'password': mesazhi[1],
                 'ttl': 100,
                 'isAdmin': mesazhi[1] == adminPassword,
-                'lastActivity': Date.now()
+        
             }
         
             console.log(`Kane mbete edhe ${maxClients - Object.keys(clients).length} vende`.green)
@@ -78,18 +78,20 @@ server.on('message', (msg, remoteInfo) => {
             server.send("Me vjen keq, nuk ka vend.".yellow, remoteInfo.port, remoteInfo.address)
             return
         }
-    } else {
-        //perditeson kohen e aktivitetit te fundit te klientit
-        clients[clientKey].lastActivity = Date.now();
     }
 
-
-    Object.keys(clients).forEach(key => { // decrement ttl and delete client if neccesary
-        clients[clientKey].ttl = ttlInit // reset ttl
-        if(key != clientKey) // nese ski qu mesazh
-            if(clients[key].ttl > 0) clients[key].ttl-- // edhe ki ttl , ule ttl
-            else delete clients[key] // perndryshe myte
-    })
+    setInterval(() => {
+        Object.keys(clients).forEach(key => {
+            if(clients[key].ttl > 0) {
+                clients[key].ttl--; 
+            } else {
+                console.log(`Client ${clients[key].username} disconnected due to inactivity.`);
+                delete clients[key];  
+            }
+        });
+    }, 1000);  // Ekzekutohet cdo 1 sek
+    
+    
 
     console.log(`[${clients[clientKey].username}] => ${msg}`) // print cili klient qka po thot
 
@@ -188,20 +190,6 @@ server.on('message', (msg, remoteInfo) => {
 });
 
 
-//funksioni me mbyll lidhjen nese ska aktivitet
-function monitorClientActivity() {
-    setInterval(() => {
-        const now = Date.now();
-        Object.keys(clients).forEach((clientKey) => {
-            const client = clients[clientKey];
-            if (now - client.lastActivity > vacantTime) { // nese ka kalu koha e inaktivitetit
-                console.log(`Lidhja me klientin ${client.username} eshte mbyllur per shkak te inaktivitetit.`.red);
-               //largo nga lista e klienteve
-               delete clients[clientKey];
-            }
-        });
-    }, 10000); // Kontrollo cdo 10 sekonda
-}
 
 
 function colorizeJSON(json) {
