@@ -160,6 +160,7 @@ server.on('message', (msg, remoteInfo) => {
     } else {
         server.send("Nuk keni autorizim per te shfaqur informacionin e klienteve.".red, remoteInfo.port, remoteInfo.address);
     }
+    }
 
     // kick
     else if (command[0] === 'kick') {
@@ -177,6 +178,7 @@ server.on('message', (msg, remoteInfo) => {
         server.send("Nuk keni autorizim për të larguar klientët.".red, remoteInfo.port, remoteInfo.address);
     }
 }
+    }
 
    
 });
