@@ -48,6 +48,7 @@ server.on('message', (msg, remoteInfo) => {
 
     if (clients[clientKey]) {
         clients[clientKey].lastActivity = Date.now();
+         clients[clientKey].ttl = ttlInit;  //nese ka aktivitet e perditeson ttl
     }
     
     fileSystem.writeFile(`${__dirname}/auditim.txt`, auditMessage, {flag: 'a'}, (error) => { 
@@ -57,6 +58,11 @@ server.on('message', (msg, remoteInfo) => {
             return;
         }
     });
+     const adminExists = Object.values(clients).some(client => client.isAdmin);
+            if (adminExists && mesazhi[1] === adminPassword) {
+                server.send("Nuk mund te regjistroheni si admin. Vetem nje admin lejohet.".red, remoteInfo.port, remoteInfo.address);
+                return;
+            }
     
     if(!clients[clientKey]) {   // nese nuk osht n guest list
         if (mesazhi.length < 3) {
@@ -78,18 +84,7 @@ server.on('message', (msg, remoteInfo) => {
             server.send("Me vjen keq, nuk ka vend.".yellow, remoteInfo.port, remoteInfo.address)
             return
         }
-    }
-
-    setInterval(() => {
-        Object.keys(clients).forEach(key => {
-            if(clients[key].ttl > 0) {
-                clients[key].ttl--; 
-            } else {
-                console.log(`Client ${clients[key].username} disconnected due to inactivity.`);
-                delete clients[key];  
-            }
-        });
-    }, 1000);  // Ekzekutohet cdo 1 sek
+    
     
     
 
@@ -159,9 +154,11 @@ server.on('message', (msg, remoteInfo) => {
     }
 
     // print
-    else if (command[0] === 'print'){
-        // server.send(JSON.stringify(clients, null, 2), remoteInfo.port, remoteInfo.address)
-        server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
+     else if (command[0] === 'print'){
+        if (clients[clientKey].isAdmin) {
+        server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address);
+    } else {
+        server.send("Nuk keni autorizim per te shfaqur informacionin e klienteve.".red, remoteInfo.port, remoteInfo.address);
     }
 
     // kick
@@ -183,6 +180,17 @@ server.on('message', (msg, remoteInfo) => {
 
    
 });
+
+setInterval(() => {
+    Object.keys(clients).forEach(key => {
+        if(clients[key].ttl > 0) {
+            clients[key].ttl--; 
+        } else {
+            console.log(`Client ${clients[key].username} disconnected due to inactivity.`);
+            delete clients[key];  
+        }
+    });
+}, 1000);  // Ekzekutohet cdo 1 sek
 
 function colorizeJSON(json) {
     if (typeof json != 'string') {
