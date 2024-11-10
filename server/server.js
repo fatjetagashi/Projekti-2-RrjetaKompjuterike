@@ -102,23 +102,20 @@ server.on('message', (msg, remoteInfo) => {
     if(command[0] === 'write'){
         if(clients[clientKey].isAdmin === true){
             if(command[1] === 'auditim.txt'){
-                server.send("Fajlli eshte READ-ONLY".red, remoteInfo.port, remoteInfo.address);
-                return;
+            server.send("Fajlli eshte READ-ONLY".red, remoteInfo.port, remoteInfo.address)
+            return;
             }
-            let file = `${__dirname}/${command[1]}`
-            let message = command.slice(2).join(" ")
-            fileSystem.writeFile(file, `\n${message}`, {flag: 'a'}, (error) => {
-                if (error) {
-                    server.send("Error gjate shkrimit ne fajll".red, remoteInfo.port, remoteInfo.address);
-                    return;
-                }
-                server.send("Fajlli u shkrua me sukses".green, remoteInfo.port, remoteInfo.address);
-            })
+        let file = `${__dirname}/${command[1]}`
+        let message = command.slice(2).join(" ")
+        fileSystem.writeFile(file, `\n${message}`, {flag: 'a'}, (error) => {
+            if (error) {
+                server.send("Error gjate shkrimit ne fajll".red, remoteInfo.port, remoteInfo.address)
+                return
+            }
+            server.send("Fajlli u shkrua me sukses".green, remoteInfo.port, remoteInfo.address)
+        })
         } else {
-            // Vonon përgjigjen për klientët pa privilegje
-            setTimeout(() => {
-                server.send("Nuk ki tdrejt dost".yellow, remoteInfo.port, remoteInfo.address);
-            }, delayForRegularClients);
+            server.send("Nuk ki tdrejt dost".yellow, remoteInfo.port, remoteInfo.address)
         }
     }
 
@@ -142,51 +139,49 @@ server.on('message', (msg, remoteInfo) => {
         });
     }
 
-    //execute <command>
-    else if (command[0] === 'execute'){
-        setTimeout(() => {
-            if (clients[clientKey].isAdmin) { 
-                const exec = require('child_process').exec;
-                const execCommand = command.slice(1).join(" "); 
-                exec(execCommand, (error, stdout, stderr) => {
-                    if (error) {
-                        server.send(`Error gjate ekzekutimit te komandes: ${error.message}`.red, remoteInfo.port, remoteInfo.address);
-                        return;
-                    }
-                    let message = 'komanda ne fjale u ekzekutua'
-                    server.send(message, remoteInfo.port, remoteInfo.address)
-                });
-            } else {
-                server.send("Nuk keni autorizim per te ekzekutuar komanda.".red, remoteInfo.port, remoteInfo.address);
-            }
-        }, clients[clientKey].isAdmin ? 0 : delayForRegularClients);
+     //execute <command>
+     else if (command[0] === 'execute'){
+    
+        if (clients[clientKey].isAdmin) { 
+            const exec = require('child_process').exec;
+            const execCommand = command.slice(1).join(" "); 
+            exec(execCommand, (error, stdout, stderr) => {
+                if (error) {
+                    server.send(`Error gjate ekzekutimit te komandes: ${error.message}`.red, remoteInfo.port, remoteInfo.address);
+                    return;
+                }
+                let message = 'komanda ne fjale u ekzekutua'
+                  server.send(message, remoteInfo.port, remoteInfo.address)
+            });
+        } else {
+            server.send("Nuk keni autorizim per te ekzekutuar komanda.".red, remoteInfo.port, remoteInfo.address);
+        }
     }
 
      // print
-     else if (command[0] === 'print'){
-        setTimeout(() => {
-            server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
-        }, clients[clientKey].isAdmin ? 0 : delayForRegularClients);
+    else if (command[0] === 'print'){
+        // server.send(JSON.stringify(clients, null, 2), remoteInfo.port, remoteInfo.address)
+        server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
     }
 
    // kick
    else if (command[0] === 'kick') {
-    setTimeout(() => {
-        if (clients[clientKey].isAdmin === true) {
-            let usernameToKick = command.slice(1).join(" ");
-            let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
-            if (keyToKick) {
-                delete clients[keyToKick];
-                server.send(`Klienti '${usernameToKick}' u largua me sukses.`.green, remoteInfo.port, remoteInfo.address);
-                console.log(`Klienti '${usernameToKick}' u largua nga serveri.`);
-            } else {
-                server.send("Klienti i specifikuar nuk ekziston.".yellow, remoteInfo.port, remoteInfo.address);
-            }
+    if (clients[clientKey].isAdmin === true) {
+        let usernameToKick = command.slice(1).join(" ");
+        let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
+        if (keyToKick) {
+            delete clients[keyToKick];
+            server.send(`Klienti '${usernameToKick}' u largua me sukses.`.green, remoteInfo.port, remoteInfo.address);
+            console.log(`Klienti '${usernameToKick}' u largua nga serveri.`);
         } else {
-            server.send("Nuk keni autorizim për te larguar klientet.".red, remoteInfo.port, remoteInfo.address);
+            server.send("Klienti i specifikuar nuk ekziston.".yellow, remoteInfo.port, remoteInfo.address);
         }
-    }, clients[clientKey].isAdmin ? 0 : delayForRegularClients);
+    } else {
+        server.send("Nuk keni autorizim për të larguar klientët.".red, remoteInfo.port, remoteInfo.address);
+    }
 }
+
+   
 });
 
 

@@ -1,7 +1,7 @@
 const dgram = require('dgram');
 const client = dgram.createSocket('udp4');
 
-const message = Buffer.from('RegularUser; user123; write testRegular.txt Mesazh nga klienti i zakonshëm');
+const message = Buffer.from('RegularUser; user123; read asd.txt');
 const serverPort = 41234;
 const serverIp = 'localhost';
 

@@ -1,7 +1,7 @@
 const dgram = require('dgram');
 const client = dgram.createSocket('udp4');
 
-const message = Buffer.from('AdminUser; admin; write testAdmin.txt Mesazh nga admin');
+const message = Buffer.from('AdminUser; admin; read asd.txt');
 const serverPort = 41234;
 const serverIp = 'localhost';
 
