@@ -15,7 +15,7 @@ client.send(message, 0, message.length, serverPort, serverIp, (err) => {
     }
 
  
-    client.on('message', (msg) => {
+client.on('message', (msg) => {
         const endTime = Date.now(); //Koha e marrjes se pergjigjes
         console.log(`Pergjigjja per klientin e zakonshem u mor pas ${endTime - startTime} ms ne kohen: ${new Date(endTime).toISOString()}`);
         client.close();

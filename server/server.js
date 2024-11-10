@@ -139,8 +139,8 @@ server.on('message', (msg, remoteInfo) => {
         });
     }
 
-     //execute <command>
-     else if (command[0] === 'execute'){
+    //execute <command>
+    else if (command[0] === 'execute'){
     
         if (clients[clientKey].isAdmin) { 
             const exec = require('child_process').exec;
@@ -158,14 +158,14 @@ server.on('message', (msg, remoteInfo) => {
         }
     }
 
-     // print
+    // print
     else if (command[0] === 'print'){
         // server.send(JSON.stringify(clients, null, 2), remoteInfo.port, remoteInfo.address)
         server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
     }
 
-   // kick
-   else if (command[0] === 'kick') {
+    // kick
+    else if (command[0] === 'kick') {
     if (clients[clientKey].isAdmin === true) {
         let usernameToKick = command.slice(1).join(" ");
         let keyToKick = Object.keys(clients).find(key => clients[key].username === usernameToKick);
@@ -183,9 +183,6 @@ server.on('message', (msg, remoteInfo) => {
 
    
 });
-
-
-
 
 function colorizeJSON(json) {
     if (typeof json != 'string') {
