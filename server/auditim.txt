@@ -171,3 +171,6 @@ gashi; gashi; read asd.txt[2024-11-09T02:22:48.342Z] [127.0.0.1:60749] - admin; 
 [2024-11-09T02:28:52.779Z] [127.0.0.1:55542] - admin; admin; write asd.txt hej
 [2024-11-09T02:29:27.390Z] [127.0.0.1:55542] - admin; admin; read asd.txt
 [2024-11-09T02:30:01.769Z] [127.0.0.1:55542] - admin; admin; read auditim.txt
+[2024-11-10T11:07:10.985Z] [127.0.0.1:57574] - Gent zhushi; admin
+[2024-11-10T11:07:22.033Z] [127.0.0.1:57574] - Gent zhushi; admin; print
+[2024-11-10T11:07:27.017Z] [127.0.0.1:57574] - print
