@@ -8,9 +8,8 @@ const ip = 'localhost' // ipconfig getifaddr en0 - adresa e interface te wifi, e
 const port = 41234
 const maxClients = 4
 const adminPassword = 'admin'
-const ttlInit = 10 // initial ttl
-const vacantTime = 30000; // Koha pa aktivitet (30 sekonda)
-
+const ttlInit = 60 // initial ttl
+const vacantTime = 30000; 
 const delayForRegularClients = 2000; // Koha e vonesës për klientët e zakonshëm në milisekonda 
 
 
@@ -43,11 +42,12 @@ server.on('message', (msg, remoteInfo) => {
     const clientKey = remoteInfo.address + ':' + remoteInfo.port;
     let mesazhi = msg.toString().split('; '); // 0-username, 1-password, 2-ctrl
 
-    const timestamp = new Date().toISOString(); // Merr kohën aktuale në format ISO
+    const timestamp = new Date().toISOString(); // Merr kohen aktuale në format ISO
     const auditMessage = `[${timestamp}] [${remoteInfo.address}:${remoteInfo.port}] - ${msg}\n`;
 
     if (clients[clientKey]) {
         clients[clientKey].lastActivity = Date.now();
+        clients[clientKey].ttl = ttlInit;  //nese ka aktivitet e perditeson ttl
     }
     
     fileSystem.writeFile(`${__dirname}/auditim.txt`, auditMessage, {flag: 'a'}, (error) => { 
@@ -57,6 +57,11 @@ server.on('message', (msg, remoteInfo) => {
             return;
         }
     });
+    const adminExists = Object.values(clients).some(client => client.isAdmin);
+            if (adminExists && mesazhi[1] === adminPassword) {
+                server.send("Nuk mund te regjistroheni si admin. Vetem nje admin lejohet.".red, remoteInfo.port, remoteInfo.address);
+                return;
+            }
     
     if(!clients[clientKey]) {   // nese nuk osht n guest list
         if (mesazhi.length < 3) {
@@ -89,7 +94,7 @@ server.on('message', (msg, remoteInfo) => {
                 delete clients[key];  
             }
         });
-    }, 1000);  // Ekzekutohet cdo 1 sek
+    }, 60000);  // Ekzekutohet cdo 1 min
     
     
 
@@ -115,7 +120,7 @@ server.on('message', (msg, remoteInfo) => {
             server.send("Fajlli u shkrua me sukses".green, remoteInfo.port, remoteInfo.address)
         })
         } else {
-            server.send("Nuk ki tdrejt dost".yellow, remoteInfo.port, remoteInfo.address)
+            server.send("Nuk keni autorizim".yellow, remoteInfo.port, remoteInfo.address)
         }
     }
 
@@ -150,7 +155,7 @@ server.on('message', (msg, remoteInfo) => {
                     server.send(`Error gjate ekzekutimit te komandes: ${error.message}`.red, remoteInfo.port, remoteInfo.address);
                     return;
                 }
-                let message = 'komanda ne fjale u ekzekutua'
+                let message = 'Komanda ne fjale u ekzekutua'
                   server.send(message, remoteInfo.port, remoteInfo.address)
             });
         } else {
@@ -158,11 +163,22 @@ server.on('message', (msg, remoteInfo) => {
         }
     }
 
+<<<<<<< HEAD
     // print
     else if (command[0] === 'print'){
         // server.send(JSON.stringify(clients, null, 2), remoteInfo.port, remoteInfo.address)
         server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address)
+=======
+    
+   else if (command[0] === 'print'){
+    if (clients[clientKey].isAdmin) {
+        server.send(colorizeJSON(clients), remoteInfo.port, remoteInfo.address);
+    } else {
+        server.send("Nuk keni autorizim per te shfaqur informacionin e klienteve.".red, remoteInfo.port, remoteInfo.address);
+>>>>>>> 1c6ab06e62f466ad0517ee9ec66dd5051bc6293d
     }
+}
+
 
     // kick
     else if (command[0] === 'kick') {
@@ -177,7 +193,7 @@ server.on('message', (msg, remoteInfo) => {
             server.send("Klienti i specifikuar nuk ekziston.".yellow, remoteInfo.port, remoteInfo.address);
         }
     } else {
-        server.send("Nuk keni autorizim për të larguar klientët.".red, remoteInfo.port, remoteInfo.address);
+        server.send("Nuk keni autorizim per te larguar klientet.".red, remoteInfo.port, remoteInfo.address);
     }
 }
 
