@@ -57,6 +57,11 @@ server.on('message', (msg, remoteInfo) => {
             return;
         }
     });
+    const adminExists = Object.values(clients).some(client => client.isAdmin);
+            if (adminExists && mesazhi[1] === adminPassword) {
+                server.send("Nuk mund te regjistroheni si admin. Vetem nje admin lejohet.".red, remoteInfo.port, remoteInfo.address);
+                return;
+            }
     
     if(!clients[clientKey]) {   // nese nuk osht n guest list
         if (mesazhi.length < 3) {
