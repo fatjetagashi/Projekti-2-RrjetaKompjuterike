@@ -9,8 +9,12 @@ const port = 41234
 const maxClients = 4
 const adminPassword = 'admin'
 const ttlInit = 10 // initial ttl
+const vacantTime = 30000; // Koha pa aktivitet (30 sekonda)
+
 
 let clients = {} // objekt
+
+
 
 server.bind(port, ip) // anllaseri :D
 
@@ -18,6 +22,7 @@ server.on('listening', () => {
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     console.log(`Serveri po degjon ne socketin: ` + `[${ip}:${port}]`.magenta)
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    monitorClientActivity(); // nisja e monitorimit te aktivitetit
     const readLine = rl.createInterface({
         input: process.stdin,
         output: process.stdout
@@ -32,11 +37,6 @@ server.on('listening', () => {
     
 })
 
-/**
- * TODO:
- *      me bo execute
- *      me mbyll lidhjen mas ni vacant time
- */
 
 server.on('message', (msg, remoteInfo) => {
     const clientKey = remoteInfo.address + ':' + remoteInfo.port
@@ -44,6 +44,10 @@ server.on('message', (msg, remoteInfo) => {
 
     const timestamp = new Date().toISOString(); // Merr kohën aktuale në format ISO
     const auditMessage = `[${timestamp}] [${remoteInfo.address}:${remoteInfo.port}] - ${msg}\n`;
+
+    if (clients[clientKey]) {
+        clients[clientKey].lastActivity = Date.now();
+    }
     
     fileSystem.writeFile(`${__dirname}/auditim.txt`, auditMessage, {flag: 'a'}, (error) => { 
         if (error) {
@@ -58,12 +62,14 @@ server.on('message', (msg, remoteInfo) => {
             server.send("Ju lutemi siguroni emrin, passwordin dhe komanden.".yellow, remoteInfo.port, remoteInfo.address)
             return
         }
+
         if(Object.keys(clients).length < maxClients){       // nese ka ven
             clients[clientKey] = {
                 'username': mesazhi[0],
                 'password': mesazhi[1],
                 'ttl': 100,
-                'isAdmin': mesazhi[1] == adminPassword
+                'isAdmin': mesazhi[1] == adminPassword,
+                'lastActivity': Date.now()
             }
         
             console.log(`Kane mbete edhe ${maxClients - Object.keys(clients).length} vende`.green)
@@ -71,7 +77,11 @@ server.on('message', (msg, remoteInfo) => {
             server.send("Me vjen keq, nuk ka vend.".yellow, remoteInfo.port, remoteInfo.address)
             return
         }
+    } else {
+        //perditeson kohen e aktivitetit te fundit te klientit
+        clients[clientKey].lastActivity = Date.now();
     }
+
 
     Object.keys(clients).forEach(key => { // decrement ttl and delete client if neccesary
         clients[clientKey].ttl = ttlInit // reset ttl
@@ -151,8 +161,6 @@ server.on('message', (msg, remoteInfo) => {
 
     
 
-    
-
     else if (command[0] === 'kick') {
         if (clients[clientKey].isAdmin === true) {
             let usernameToKick = command.slice(1).join(" ");
@@ -169,6 +177,23 @@ server.on('message', (msg, remoteInfo) => {
         }
     }
 });
+
+
+//funksioni me mbyll lidhjen nese ska aktivitet
+function monitorClientActivity() {
+    setInterval(() => {
+        const now = Date.now();
+        Object.keys(clients).forEach((clientKey) => {
+            const client = clients[clientKey];
+            if (now - client.lastActivity > vacantTime) { // nese ka kalu koha e inaktivitetit
+                console.log(`Lidhja me klientin ${client.username} eshte mbyllur per shkak te inaktivitetit.`.red);
+               //largo nga lista e klienteve
+               delete clients[clientKey];
+            }
+        });
+    }, 10000); // Kontrollo cdo 10 sekonda
+}
+
 
 function colorizeJSON(json) {
     if (typeof json != 'string') {
