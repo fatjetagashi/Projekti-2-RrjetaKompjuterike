@@ -171,3 +171,17 @@ gashi; gashi; read asd.txt[2024-11-09T02:22:48.342Z] [127.0.0.1:60749] - admin; 
 [2024-11-09T02:28:52.779Z] [127.0.0.1:55542] - admin; admin; write asd.txt hej
 [2024-11-09T02:29:27.390Z] [127.0.0.1:55542] - admin; admin; read asd.txt
 [2024-11-09T02:30:01.769Z] [127.0.0.1:55542] - admin; admin; read auditim.txt
+<<<<<<< HEAD
+[2024-11-10T02:11:53.337Z] [127.0.0.1:50089] - klient; klient; read asd.txt
+[2024-11-10T02:12:32.663Z] [127.0.0.1:50089] - read auditim.txt
+[2024-11-10T02:57:57.756Z] [127.0.0.1:57150] - admin; admin; write asd.txt prsh
+[2024-11-10T02:58:19.410Z] [127.0.0.1:57150] - read asd.txt
+[2024-11-10T03:06:20.644Z] [127.0.0.1:57357] - AdminUser; admin; write testAdmin.txt Mesazh nga admin
+[2024-11-10T03:06:20.882Z] [127.0.0.1:57358] - RegularUser; user123; write testRegular.txt Mesazh nga klienti i zakonshëm
+[2024-11-10T03:17:00.125Z] [127.0.0.1:51646] - RegularUser; user123; write testRegular.txt Mesazh nga klienti i zakonshëm
+[2024-11-10T03:17:00.370Z] [127.0.0.1:51647] - AdminUser; admin; write testAdmin.txt Mesazh nga admin
+=======
+[2024-11-10T11:07:10.985Z] [127.0.0.1:57574] - Gent zhushi; admin
+[2024-11-10T11:07:22.033Z] [127.0.0.1:57574] - Gent zhushi; admin; print
+[2024-11-10T11:07:27.017Z] [127.0.0.1:57574] - print
+>>>>>>> 961ece42108dcb72accf953dd6227c66f29ff1e
